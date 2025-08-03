@@ -166,6 +166,43 @@ class MySQLHandler:
             """
         )
         return self.cursor.fetchall()
+    
+    def get_top_n_pages(self, n: int):
+        self.cursor.execute(
+            """
+            SELECT path, COUNT(*) AS request_count
+            FROM log_entries
+            GROUP BY path
+            ORDER BY request_count DESC
+            LIMIT %s
+            """, (n,)
+        )
+        return self.cursor.fetchall()
+
+    def get_traffic_by_os(self):
+        self.cursor.execute(
+            """
+            SELECT ua.os AS operating_system, COUNT(*) AS request_count
+            FROM log_entries le
+            JOIN user_agents ua ON le.user_agent_id = ua.id
+            GROUP BY ua.os
+            ORDER BY request_count DESC
+            """
+        )
+        return self.cursor.fetchall()
+
+    def get_error_logs_by_date(self, date_str: str):
+        self.cursor.execute(
+            """
+            SELECT *
+            FROM log_entries le
+            WHERE DATE(le.timestamp) = %s
+            AND le.status_code >= 400
+            ORDER BY le.timestamp
+            """, (date_str,)
+        )
+        return self.cursor.fetchall()
+
 
 
     def close(self):
