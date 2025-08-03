@@ -22,9 +22,10 @@ def main():
     process_parser.add_argument("file_path", help="Path to log file")
 
     report_parser = subparsers.add_parser("generate_report", help="Generate reports from DB")
-    report_parser.add_argument("type", choices=["top_n_ips", "status_code_distribution", "hourly_traffic"])
-    report_parser.add_argument("--n", type=int, default=5, help="Top N IPs (for top_n_ips report)")
-
+    report_parser.add_argument("type", choices=["top_n_ips", "status_code_distribution", "hourly_traffic","top_n_pages", "traffic_by_os", "error_logs_by_date"])
+    report_parser.add_argument("--n", type=int, default=5, help="Top N results")
+    report_parser.add_argument("--date", type=str, help="Date for error logs (YYYY-MM-DD)")
+    
     args = parser.parse_args()
 
     db = MySQLHandler(load_config())
@@ -47,6 +48,16 @@ def main():
             result = db.get_status_code_distribution()
         elif args.type == "hourly_traffic":
             result = db.get_hourly_traffic()
+        elif args.type == "top_n_pages":
+            result = db.get_top_n_pages(args.n)
+        elif args.type == "traffic_by_os":
+            result = db.get_traffic_by_os()
+        elif args.type == "error_logs_by_date":
+            if args.date:
+                result = db.get_error_logs_by_date(args.date)
+            else:
+                print("Error: --date is required for error_logs_by_date")
+                return
         else:
             result = []
         print(tabulate(result, headers="keys", tablefmt="grid"))
