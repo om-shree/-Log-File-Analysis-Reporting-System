@@ -13,7 +13,10 @@ A command-line tool to parse, store, and analyze web server log files in Apache 
 - ✅ Generate analytical reports:
   - Top N IPs by request count  
   - HTTP status code distribution with percentage  
-  - Hourly traffic trends  
+  - Hourly traffic trends
+  - Top N most requested pages (URLs)
+  - Traffic breakdown by Operating System
+  - Error logs (4xx/5xx) filtered by date
 - ✅ Pretty CLI output using `tabulate`
 
 ---
@@ -77,6 +80,22 @@ python main.py generate_report status_code_distribution
 ```bash
 python main.py generate_report hourly_traffic
 ```
+#### ▶ Most requested pages
+```bash
+python main.py generate_report top_n_pages --n 10
+```
+
+
+#### ▶ Traffic by OS
+```bash
+python main.py generate_report traffic_by_os
+```
+
+
+#### ▶ Error logs for a date
+```bash
+python main.py generate_report error_logs_by_date --date 2025-07-30
+```
 
 ---
 
@@ -116,6 +135,15 @@ python main.py generate_report status_code_distribution
 
 # Generate hourly traffic report
 python main.py generate_report hourly_traffic
+
+# Most requested pages
+python main.py generate_report top_n_pages --n 10
+
+# Traffic by OS
+python main.py generate_report traffic_by_os
+
+# Error logs for a date
+python main.py generate_report error_logs_by_date --date 2023-07-30
 ```
 
 ---
